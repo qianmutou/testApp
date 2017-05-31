@@ -1,6 +1,7 @@
 package com.testapp;
 
 
+import com.testapp.engine.TestEngine;
 import com.testapp.service.CountTimeService;
 import com.testapp.service.CountTimeService.CallBack;
 import com.testapp.service.CountTimeService.TimeBinder;
@@ -37,6 +38,10 @@ public class MainAct extends Activity implements ServiceConnection {
 			//time_TextView.setText(BaseUtils.formatTime(time));
 		};
 	};
+	
+	private TestEngine engine;
+	private int order = 1;
+	private int totalNum;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +49,8 @@ public class MainAct extends Activity implements ServiceConnection {
 		setContentView(R.layout.act_main);
 		time_TextView = (TextView) findViewById(R.id.time_textview);
 		
+		engine = TestEngine.getTestEngine(ctx);
+		totalNum = engine.getTotalNum();
 		//bindService(new Intent(this, CountTimeService.class), this, BIND_AUTO_CREATE);
 	}
 	
@@ -60,10 +67,12 @@ public class MainAct extends Activity implements ServiceConnection {
 			}else {
 				if (lastX < event.getRawX()) {
 					//滑到上一页
+					order = order > 0?--order:0;
 					Toast.makeText(ctx, "上一页", 0).show();
 				}
 				if (lastX > event.getRawX()) {
 					//滑到下一页
+					order = order < totalNum ? ++order : totalNum;
 					Toast.makeText(ctx, "下一页", 0).show();
 				}
 			}
